@@ -6,7 +6,7 @@
                 <span class="icon-menu icon"></span>
             </div>
             <div class="icon-wrapper">
-                <span class="icon-progress icon"></span>
+                <span class="icon-progress icon" @click="showSetting(2)"></span>
             </div>
             <div class="icon-wrapper">
                 <span class="icon-bright icon" @click="showSetting(1)"></span>
@@ -39,7 +39,23 @@
                     <div class="text" :class="{'selected': index=== defaultTheme}">{{item.name}}</div>
                 </div>
             </div>
-        </div>
+            <div class="setting-progree" v-else-if="showTag === 2">
+                <div class="progress-wrapper">
+                    <input type="range" class="progress"
+                        max="100"
+                        min="0"
+                        step="1"
+                        @change="onProgressChange($event.target.value)"
+                        @input="onProgressInput($event.target.value)"
+                        :value="progress"
+                        :disabled="!bookAvailable"
+                        ref="progress">
+                </div>
+                    <div class="text-wrapper">
+                        <span>{{bookAvailable? progress + "%" : '加载中'}}</span>
+                    </div>
+                </div>
+            </div>
     </transition>
 </div>
 </template>
@@ -54,24 +70,32 @@ export default {
         fontSizeList: Array,
         defaultFontSize: Number,
         themeList: Array,
-        defaultTheme: Number
+        defaultTheme: Number,
+        bookAvailable: Boolean
     },
     data() {
         return {
             ifSettingShow: false,
-            showTag: 0
+            showTag: 0,
+            progress: 0
         }
     },
     methods: {
+        onProgressInput(progress) {
+            this.progress = progress
+        },
+        onProgressChange(progress) {
+            this.$emit('onProgressChange', progress)
+        },
         setTheme(index) {
-            this.$emit('setTheme',index)
+            this.$emit('setTheme', index)
         },
         setFontSize(fontSize) {
             this.$emit('setFontSize', fontSize)
         },
         showSetting(tag) {
             this.ifSettingShow = true,
-            this.showTag = tag
+                this.showTag = tag
         },
         hideSetting() {
             this.ifSettingShow = false
@@ -195,31 +219,55 @@ export default {
                 }
             }
         }
+
         .setting-theme {
             height: 100%;
             display: flex;
-            .setting-theme-item{
+
+            .setting-theme-item {
                 flex: 1;
                 display: flex;
                 flex-direction: column;
                 padding: px2rem(5);
                 box-sizing: border-box;
+
                 .preview {
-                    flex:1;
+                    flex: 1;
                     border: px2rem(1) solid #ccc;
                     box-sizing: border-box;
+
                     &.no-border {
                         border: none;
                     }
                 }
+
                 .text {
                     flex: 0 0 px2rem(20);
                     font-size: px2rem(16);
-                    color:#ccc;
+                    color: #ccc;
                     @include center;
-                    &.selected {color: #333}
+
+                    &.selected {
+                        color: #333
+                    }
                 }
             }
+        }
+
+        .setting-progress {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            .progress-wrapper {            
+            height: 100%;
+            width: 100;
+            padding: 0 px2rem(30);
+            box-sizing: border-box;
+            @include center;
+            .progress {}
+            }
+
+            .text-wrapper {}
         }
     }
 }
