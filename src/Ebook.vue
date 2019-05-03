@@ -9,13 +9,18 @@
             <div class="right" @click="nextPage"></div>
         </div>
     </div>
-    <menu-bar :ifTitleAndMenuShow="ifTitleAndMenuShow" :fontSizeList="fontSizeList" :defaultFontSize="defaultFontSize" @setFontSize="setFontSize"
-    :themeList="themeList"
-    :defaultTheme="defaultTheme"
-    @setTheme="setTheme"
-    :bookAvailable="bookAvailable"
-    @onProgressChange="onProgressChange"
-     ref="menuBar"></menu-bar>
+    <menu-bar  :ifTitleAndMenuShow="ifTitleAndMenuShow" 
+                            :fontSizeList="fontSizeList" :defaultFontSize="defaultFontSize" @setFontSize="setFontSize"
+                            :themeList="themeList"
+                            :defaultTheme="defaultTheme"
+                            @setTheme="setTheme"
+                            :bookAvailable="bookAvailable"
+                            @onProgressChange="onProgressChange"
+                            @jumpTo="jumpTo"
+                            :navigation="navigation"
+                            :bookProgress="bookProgress"
+                            ref="menuBar">
+     </menu-bar>
 </div>
 </template>
 
@@ -94,10 +99,31 @@ export default {
                 }
             ],
             defaultTheme: 0,
-            bookAvailable: false
+            bookAvailable: false,
+            navigation: {},
+            bookProgress: 0
         }
     },
     methods: {
+        showProgress() {
+            const currentLocation = this.rendition.currentLocation()
+            this.bookProgress = this.bookAvailable ? this.locations.percentageFromCfi(currentLocation.start.cfi):0
+            this.bookProgress = Math.round(this.bookProgress * 100)
+        },
+        //跳转到指定的链接
+        jumpTo(href) {
+            this.rendition.display(href).then(
+                () => {
+                    this.showProgress()
+                }
+            )
+            this.hideTitleAndMenu()
+        },
+        hideTitleAndMenu(){
+            this.ifTitleAndMenuShow = false
+            this.$refs.menuBar.hideSetting()
+            this.$refs.menuBar.hideContent()
+        },
         onProgressChange(progress) {
             const percentage = progress / 100
             const location = percentage > 0 ? this.locations.cfiFromPercentage(percentage) : 0
@@ -126,12 +152,21 @@ export default {
         },
         prevPage() {
             if (this.rendition) {
-                this.rendition.prev()
+                this.rendition.prev().then(
+                    () =>{
+                        this.showProgress()
+                    }
+                )
+
             }
         },
         nextPage() {
             if (this.rendition) {
-                this.rendition.next()
+                this.rendition.next().then(
+                    () =>{
+                        this.showProgress()
+                    }
+                )
             }
         },
         // 电子书的解析和渲染
@@ -140,8 +175,8 @@ export default {
             this.book = new Epub(DOWNLOAD_URL)
             this.rendition = this.book.renderTo(
                 'read', {
-                    width: window.innerWidth,
-                    height: window.innerHeight
+                    width: "100vw",
+                    height: "100vh"
                 })
             this.rendition.display()
             // 获取theme对象
@@ -153,15 +188,27 @@ export default {
             this.setTheme(this.defaultTheme)
             // 进度的获取
             this.book.ready.then(() => {
+                // 获取导航栏
+                this.navigation = this.book.navigation
                 return  this.book.locations.generate()
             }).then(() => {
                 this.locations = this.book.locations
                 this.bookAvailable = true
             })
+        },
+        handleScroll (e) {
+            //如果侧栏没有展示就监听鼠标滚轮事件
+            if(!this.$refs.menuBar.ifShowContent && (document.getElementsByClassName("mask").length == 1)){
+                e.deltaY>0 ? this.nextPage() : this.prevPage()}
         }
     },
     mounted() {
         this.showEpub()
+        // 监听鼠标滚轮事件
+        // ie and Chrome
+        window.addEventListener('mousewheel',this.handleScroll,false)
+        // firefox
+        window.addEventListener("DOMMouseScroll",this.handleScroll,false)
     }
 }
 </script>
@@ -171,7 +218,9 @@ export default {
 
 .ebook {
     position: relative;
-
+	// 隐藏侧边和底部的滚动条
+ 	overflow-y:hidden;
+  	overflow-x:hidden;
     .read-wrapper {
         .mask {
             position: absolute;
