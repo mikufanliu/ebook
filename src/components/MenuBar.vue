@@ -104,6 +104,7 @@ export default {
         },
     },
     methods: {
+        // 提供目录是否展示信息给父组件
         returnISCT () {
             return this.ifShowContent
         },
