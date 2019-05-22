@@ -5,13 +5,13 @@ import Ebook from '@/Ebook'
 Vue.use(Router)
 
 export default new Router({
-  routes: [{
-      path: '/',
-      redirect: '/ebook'
+    routes: [{
+        path: '/',
+        redirect: '/ebook'
     },
     {
-      path: '/ebook',
-      component: Ebook
+        path: '/ebook',
+        component: Ebook
     }
-  ]
+    ]
 })

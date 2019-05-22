@@ -48,7 +48,7 @@
                         @change="onProgressChange($event.target.value)"
                         v-model="progress"
                         :disabled="!bookAvailable"
-                        :style="{backgroundSize: progress + '% 100%'}" 
+                        :style="{backgroundSize: progress + '% 100%'}"
                         ref="progress">
                     </div>
                     <div class="text-wrapper">
@@ -99,13 +99,13 @@ export default {
     },
     watch: {
         // 监听bookProgress的改变，动态赋值给progress
-        bookProgress : function (){
+        bookProgress: function () {
             this.progress = this.bookProgress
         },
     },
     methods: {
         // 提供目录是否展示信息给父组件
-        returnISCT () {
+        returnISCT() {
             return this.ifShowContent
         },
         showNav() {
@@ -120,11 +120,6 @@ export default {
         jumpTo(target) {
             this.$emit('jumpTo', target)
         },
-        // 拖动进度条改变
-        // onProgressInput(progress) {
-        //     this.progress = progress
-        //    // this.$refs.progress.style.backgroundSize = `${this.progress}% 100%` //注意这里的是``而不是单引号，这是ES6的模板字符串
-        // },
         // 拖动进度条后松开触发事件，跳转到指定位置
         onProgressChange(progress) {
             this.$emit('onProgressChange', progress)

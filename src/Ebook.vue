@@ -1,6 +1,7 @@
 <template>
 <div class="ebook">
-    <title-bar :ifTitleAndMenuShow="ifTitleAndMenuShow" @openNewEpub="openNewEpub"></title-bar>
+    <title-bar
+    :ifTitleAndMenuShow="ifTitleAndMenuShow" @openNewEpub="openNewEpub"></title-bar>
     <div class="read-wrapper">
         <div id="read"></div>
         <div class="mask">
@@ -21,8 +22,8 @@ import MenuBar from '@/components/MenuBar'
 import ePub from 'epubjs'
 
 
-const DOWNLOAD_URL1 = '/static/book1.epub'
-const DOWNLOAD_URL2 = '/static/book2.epub'
+const DOWNLOAD_URL1 = './static/book1.epub'
+const DOWNLOAD_URL2 = './static/book2.epub'
 
 export default {
     components: {
@@ -31,6 +32,7 @@ export default {
     },
     data() {
         return {
+            book:null,
             ifTitleAndMenuShow: false,
             fontSizeList: [{
                     fontSize: 12
@@ -96,7 +98,7 @@ export default {
             bookAvailable: false,
             navigation: {},
             bookProgress: 0,
-            bookSrc: DOWNLOAD_URL1
+            bookSrc: DOWNLOAD_URL2
         }
     },
     methods: {
@@ -164,23 +166,15 @@ export default {
                 )
             }
         },
-        openNewEpub(bookSrc) {
-            var box = document.getElementById('read')
-            var child = document.getElementsByClassName('epub-container')
-            if (child[0]) {
-                box.removeChild(child[0]);
-            }
-            // console.log("delate old book")
-            this.showEpub(bookSrc)
-            // console.log("open new book")
-        },
         // 电子书的解析和渲染
-        showEpub(bookSrc) {
+        openNewEpub(bookSrc) {
+            // 删除旧的已经渲染的book
+            if(this.book!=null)this.book.destroy()
             // 生成Book对象
-                this.book = new ePub(bookSrc, {
+                this.book =new ePub(bookSrc, {
                     restore: true
-                });
-            // 通过Book.renderTo生成Rendition对象
+                })
+                console.log(this.book)
             this.rendition = this.book.renderTo('read', {
                 width: "100vw",
                 height: "100vh",
@@ -226,6 +220,9 @@ export default {
         window.addEventListener('mousewheel', this.handleScroll, false)
         // firefox
         window.addEventListener("DOMMouseScroll", this.handleScroll, false)
+    },
+    destroyed(){
+        
     }
 }
 </script>

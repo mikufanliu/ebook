@@ -5,12 +5,20 @@ import App from './App'
 import router from './router'
 import vueAxios from 'vue-axios'
 import axios from 'axios'
+import localForage from 'localforage'
 
 import '@/assets/styles/icon.css'
 import '@/assets/styles/global.scss'
 
 Vue.use(vueAxios, axios)
 Vue.config.productionTip = false
+
+// 声明数据库存储图书
+const store = localForage.createInstance({
+    name: 'bookDB'
+})
+
+Vue.prototype.store = store
 
 /* eslint-disable no-new */
 new Vue({
