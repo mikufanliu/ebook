@@ -6,31 +6,39 @@
                 <span class="icon-books icon" @click="toggleStore"></span>
             </div>
             <div class="right">
-                <!-- <div class="icon-wrapper">
-                    <span @click="addBook" class="icon-folder-plus icon"  ></span>
-                    <input type="file" ref="inputFile" style="display:none" @change="inputNewEpub($event)">
-            </div> -->
-                    <div class="icon-wrapper">
-                        <span class="icon-cart icon"></span>
-                    </div>
-                    <div class="icon-wrapper">
-                        <span class="icon-person icon"></span>
-                    </div>
-                    <div class="icon-wrapper">
-                        <span class="icon-more icon">
+                <div class="icon-wrapper">
+                    <span class="icon-cart icon"></span>
+                </div>
+                <div class="icon-wrapper">
+                    <span class="icon-person icon"></span>
+                </div>
+                <div class="icon-wrapper">
+                    <span class="icon-more icon" @click="showBookInfo">
                 </span>
-                    </div>
-                    <div class="icon-wrapper">
-                        <span class="icon" :class="[isFullScreen?'icon-shrink':'icon-enlarge']"
+                </div>
+                <div class="icon-wrapper">
+                    <span class="icon" :class="[isFullScreen?'icon-shrink':'icon-enlarge']"
                      @click="toggleFullScreen">
                 </span>
-                    </div>
                 </div>
             </div>
+        </div>
     </transition>
-    <book-store @openNewEpub="openNewEpub"
- v-show="showBookStore" @toggleStore="toggleStore"></book-store>
-</div>
+    <book-store @openNewEpub="openNewEpub" :bookProgress="bookProgress" v-show="showBookStore" @toggleStore="toggleStore"></book-store>
+    <div class="content-mask" @click="showBookInfo" v-show="ifShowBookInfo">
+    </div>
+    <div class="info-content" v-show="ifShowBookInfo">
+        <div class="book-cover" v-show="this.bookInfo.cover!='./static/logo.png'">
+            <img v-bind:src="this.bookInfo.cover"  class="cover">
+        </div>
+            <div class="meta-info">
+                <div class="info-item" v-for="(item,index) in bookInfo" :key="index" v-show="index!='cover'&&item!='' &&item!=null">
+                    <span class="index">{{index}}</span>
+                    <span class="item">{{item}}</span>
+                </div>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script>
@@ -46,9 +54,12 @@ export default {
         return {
             showBookStore: true,
             isFullScreen: false,
+            ifShowBookInfo: false
         }
     },
     props: {
+        bookInfo: Object,
+        bookProgress: Number,
         ifTitleAndMenuShow: {
             type: Boolean,
             default: false
@@ -79,8 +90,12 @@ export default {
         });
     },
     methods: {
-        openNewEpub(value){
-            this.$emit('openNewEpub',value)
+        showBookInfo() {
+            this.ifShowBookInfo = !this.ifShowBookInfo
+            console.log(this.bookInfo)
+        },
+        openNewEpub(value) {
+            this.$emit('openNewEpub', value)
         },
         // 点击 显示/隐藏 书架
         toggleStore() {
@@ -105,6 +120,65 @@ export default {
 @import "../assets/styles/global";
 
 .title-bar {
+    .content-mask {
+        position: absolute;
+        z-index: 102;
+        background: rgba(51, 51, 51, .8);
+        width: 100%;
+        height: 100%;
+
+    }
+
+    .info-content {
+        position: absolute;
+        z-index: 103;
+        // display: flex;
+        right: 0;
+        background: #ccc;
+        width: 80%;
+        height: 100%;
+        overflow: auto;
+
+        .book-cover {
+            width: 100%;
+            height: 50%;
+            // margin: px2rem(2) 0 px2rem(2) 0;
+            @include center;
+
+            .cover {
+                width: px2rem(150);
+                height: px2rem(240);
+                box-shadow: 0 px2rem(4) px2rem(4) rgba(0, 0, 0, .15);
+            }
+        }
+
+        .meta-info {
+            background: white;
+            border-radius: 0.5em;
+            box-shadow: 0 px2rem(4) px2rem(4) rgba(0, 0, 0, .15);
+
+            .info-item {
+                height: px2rem(40);
+                width: 100%;
+                display: flex;
+                font-size: px2rem(10);
+
+                .index {
+                    height: 100%;
+                    width: 30%;
+                    @include center;
+                }
+
+                .item {
+                    height: 100%;
+                    width: 70%;
+                    @include center;
+                    border-top: 1px solid #ccc;
+                }
+            }
+        }
+    }
+
     .title-wrapper {
         position: absolute;
         top: 0;

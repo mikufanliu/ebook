@@ -7,7 +7,7 @@
         </div>
         <div class="book-store">
             <div class="book-item" v-for="(item,index) in books" :key="index">
-                <img v-bind:src="item.cover" class="book-cover" @click="open(item.key)">
+                <img v-bind:src="item.cover" class="book-cover" @click="open(item)">
                 <span class="book-name">{{item.title}}</span>
             </div>
             <div class="book-item">
@@ -29,7 +29,6 @@ export default {
     },
     data() {
         return {
-            bookKey: null,
             books: []
         }
     },
@@ -60,14 +59,12 @@ export default {
         },
         setBooks() {
             this.store.iterate((value, key, iterationNumber) => {
-                // let book = ePub(value,{ restore: true})
-                // console.log(value)
-                this.getBookMeta(value.value, key)
+                this.getBookMeta(value, key)
             })
             console.log("set meta")
         },
         inputNewEpub(e) {
-            console.log("begin")
+            // console.log("begin")
             let files = e.target.files
             if (!files.length) {
                 console.log('No file selected!')
@@ -88,10 +85,9 @@ export default {
                 this.store.keys().then(keys => {
                     // console.log(keys)
                     if (keys.indexOf(file.name) == -1) {
-                        let bookData = {'value':value,readProgress:0}
-                        this.store.setItem(file.name, bookData)
+                        this.store.setItem(file.name, value)
                         console.log("add a new book as ArryBuffer to database")
-                        this.getBookMeta(bookData.value, file.name)
+                        this.getBookMeta(value, file.name)
                     } else {
                         console.log("not a new book")
                     }
@@ -111,12 +107,14 @@ export default {
         toggleStore() {
             this.$emit('toggleStore')
         },
-        open(bookKey) {
+        open(item) {
             // console.log(bookKey)
-            this.store.getItem(bookKey).then(value => {
+            this.store.getItem(item.key).then(value => {
                 // console.log(value)
-                this.$emit('openNewEpub', value.value)
-            }).then(this.toggleStore)
+                this.$emit('openNewEpub', value)
+            }).then(this.toggleStore).then(()=>
+            this.bookIfo = item
+            )
         }
     }
 }

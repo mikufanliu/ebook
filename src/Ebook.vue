@@ -1,7 +1,6 @@
 <template>
 <div class="ebook">
-    <title-bar
-    :ifTitleAndMenuShow="ifTitleAndMenuShow" @openNewEpub="openNewEpub"></title-bar>
+    <title-bar :bookProgress="bookProgress" :ifTitleAndMenuShow="ifTitleAndMenuShow" @openNewEpub="openNewEpub" :bookInfo="bookInfo"></title-bar>
     <div class="read-wrapper">
         <div id="read"></div>
         <div class="mask">
@@ -21,7 +20,6 @@ import TitleBar from '@/components/TitleBar'
 import MenuBar from '@/components/MenuBar'
 import ePub from 'epubjs'
 
-
 const DOWNLOAD_URL1 = './static/book1.epub'
 const DOWNLOAD_URL2 = './static/book2.epub'
 
@@ -32,7 +30,8 @@ export default {
     },
     data() {
         return {
-            book:null,
+            book: null,
+            bookInfo: {},
             ifTitleAndMenuShow: false,
             fontSizeList: [{
                     fontSize: 12
@@ -166,15 +165,41 @@ export default {
                 )
             }
         },
+
         // 电子书的解析和渲染
         openNewEpub(bookSrc) {
             // 删除旧的已经渲染的book
-            if(this.book!=null)this.book.destroy()
+            if (this.book != null) {
+                // this.book
+                this.book.destroy()
+            }
             // 生成Book对象
-                this.book =new ePub(bookSrc, {
-                    restore: true
+            this.book = new ePub(bookSrc, {
+                restore: true
+            })
+            // 得到书的封面和其他详细信息
+            this.book.loaded.metadata.then(meta => {
+                this.book.loaded.cover.then(cover => {
+                    if (cover != null) {
+                        this.book.archive.createUrl(cover).then(url => {
+                            meta.cover = url
+                            // console.log(meta)
+                            this.bookInfo = meta
+                        })
+                    } else {
+                        meta.cover = './static/logo.png'
+                        // console.log(meta)
+                        // this.books.push(meta)
+                        this.bookInfo = meta
+                        // return meta
+                    }
                 })
-                console.log(this.book)
+            })
+            console.log(this.bookInfo)
+
+            // this.book.loaded.metadata.then(value=>{
+            //     this.bookIfo = value
+            // })
             this.rendition = this.book.renderTo('read', {
                 width: "100vw",
                 height: "100vh",
@@ -221,8 +246,8 @@ export default {
         // firefox
         window.addEventListener("DOMMouseScroll", this.handleScroll, false)
     },
-    destroyed(){
-        
+    destroyed() {
+
     }
 }
 </script>
