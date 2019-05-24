@@ -37,6 +37,7 @@ export default {
     background: white;
     width: 75%;
     height: 100%;
+    font-family: ubuntu, sans-serif;
 
     .content-wrapper {
         width: 100%;

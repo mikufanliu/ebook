@@ -35,7 +35,7 @@
             </div>
             <div class="setting-theme" v-else-if="showTag === 1">
                 <div class="setting-theme-item" v-for="(item,index) in themeList" :key="index" @click="setTheme(index)">
-                    <div class="preview" :style="{background: item.style.body.background}" :class="{'no-border': item.style.body.background !== '#fff'}"></div>
+                    <div class="preview" :style="{background: item.style.body.background}" :class="{'no-border': item.style.body.background == '#000'}">Aa</div>
                     <div class="text" :class="{'selected': index=== defaultTheme}">{{item.name}}</div>
                 </div>
             </div>
@@ -104,10 +104,10 @@ export default {
         },
     },
     methods: {
-        // 提供目录是否展示信息给父组件
-        returnISCT() {
-            return this.ifShowContent
+        storeProgress(callback) {
+            this.$emit('storeProgress')
         },
+
         showNav() {
             this.ifShowContent = !this.ifShowContent,
                 this.ifSettingShow = false
@@ -162,7 +162,7 @@ export default {
         display: flex;
         width: 100%;
         height: px2rem(48);
-        background: white;
+        background: rgb(232, 243, 232);
         box-shadow: 0 px2rem(-8) px2rem(8) rgba(0, 0, 0, .15);
 
         .icon-wrapper {
@@ -186,8 +186,9 @@ export default {
         width: 100%;
         height: px2rem(60);
         z-index: 101;
-        background: white;
+        background: rgb(232, 243, 232);
         box-shadow: 0 px2rem(-8) px2rem(8) rgba(0, 0, 0, .15);
+        border-bottom: 1px solid #bbb;
 
         .setting-font-size {
             display: flex;
@@ -246,6 +247,7 @@ export default {
                             height: px2rem(20);
                             border-radius: 50%;
                             background: white;
+
                             border: px2rem(1) solid #ccc;
                             box-shadow: 0 px2rem(4) px2rem(4) rgba(0, 0, 0, .15);
                             @include center;
@@ -275,11 +277,14 @@ export default {
 
                 .preview {
                     flex: 1;
-                    border: px2rem(1) solid #ccc;
+                    // border: px2rem(1) solid #ccc;
                     box-sizing: border-box;
+                    font-size: px2rem(25);
+                    @include center;
+                    border-radius: 0.3em;
 
                     &.no-border {
-                        border: none;
+                        color: white;
                     }
                 }
 

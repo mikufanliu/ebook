@@ -7,13 +7,10 @@
             </div>
             <div class="right">
                 <div class="icon-wrapper">
-                    <span class="icon-cart icon"></span>
+                    <span class="icon-history icon" @click="storeReadProgress"></span>
                 </div>
                 <div class="icon-wrapper">
-                    <span class="icon-person icon"></span>
-                </div>
-                <div class="icon-wrapper">
-                    <span class="icon-more icon" @click="showBookInfo">
+                    <span class="icon-file-text icon" @click="showBookInfo">
                 </span>
                 </div>
                 <div class="icon-wrapper">
@@ -28,7 +25,7 @@
     <div class="content-mask" @click="showBookInfo" v-show="ifShowBookInfo">
     </div>
     <div class="info-content" v-show="ifShowBookInfo">
-        <div class="book-cover" v-show="this.bookInfo.cover!='./static/logo.png'">
+        <div class="book-cover">
             <img v-bind:src="this.bookInfo.cover"  class="cover">
         </div>
             <div class="meta-info">
@@ -45,6 +42,7 @@
 import screenFull from 'screenfull'
 import BookStore from '@/components/BookStore'
 import ePub from 'epubjs'
+import { Stream } from 'stream';
 
 export default {
     components: {
@@ -52,12 +50,13 @@ export default {
     },
     data() {
         return {
-            showBookStore: true,
+            showBookStore: false,
             isFullScreen: false,
             ifShowBookInfo: false
         }
     },
     props: {
+
         bookInfo: Object,
         bookProgress: Number,
         ifTitleAndMenuShow: {
@@ -90,9 +89,13 @@ export default {
         });
     },
     methods: {
+        storeReadProgress() {
+            alert('您已成功保存阅读进度')
+            this.$emit('storeReadProgress')
+        },
         showBookInfo() {
             this.ifShowBookInfo = !this.ifShowBookInfo
-            console.log(this.bookInfo)
+            // console.log(this.bookInfo)
         },
         openNewEpub(value) {
             this.$emit('openNewEpub', value)
@@ -126,7 +129,6 @@ export default {
         background: rgba(51, 51, 51, .8);
         width: 100%;
         height: 100%;
-
     }
 
     .info-content {
@@ -134,7 +136,7 @@ export default {
         z-index: 103;
         // display: flex;
         right: 0;
-        background: #ccc;
+        background: linear-gradient(to top right, rgb(238, 220, 220), rgb(207, 228, 190));
         width: 80%;
         height: 100%;
         overflow: auto;
@@ -158,23 +160,30 @@ export default {
             box-shadow: 0 px2rem(4) px2rem(4) rgba(0, 0, 0, .15);
 
             .info-item {
+
+                &:not(:first-child) {
+                    border-top: 1px solid #ccc;
+                }
+
+                display: flex;
                 height: px2rem(40);
                 width: 100%;
-                display: flex;
                 font-size: px2rem(10);
 
                 .index {
                     height: 100%;
                     width: 30%;
                     @include center;
+                    border-right: 1px dashed #ccc;
+
                 }
 
                 .item {
                     height: 100%;
                     width: 70%;
                     @include center;
-                    border-top: 1px solid #ccc;
                 }
+
             }
         }
     }
@@ -187,7 +196,7 @@ export default {
         display: flex;
         width: 100%;
         height: px2rem(48);
-        background: red;
+        background:  rgb(232, 243, 232);
         box-shadow: 0 px2rem(8) px2rem(8) rgba(0, 0, 0, 0.15);
 
         .left {

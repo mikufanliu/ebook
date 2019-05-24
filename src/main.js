@@ -18,7 +18,13 @@ const store = localForage.createInstance({
     name: 'bookDB'
 })
 
+// 阅读进度的存储
+const bookCfi = localForage.createInstance({
+    name: 'readProgressDB'
+})
+
 Vue.prototype.store = store
+Vue.prototype.bookCfi = bookCfi
 
 /* eslint-disable no-new */
 new Vue({

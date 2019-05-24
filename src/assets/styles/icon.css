@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'icomoon';
-  src:  url('fonts/icomoon.eot?3dgz49');
-  src:  url('fonts/icomoon.eot?3dgz49#iefix') format('embedded-opentype'),
-    url('fonts/icomoon.ttf?3dgz49') format('truetype'),
-    url('fonts/icomoon.woff?3dgz49') format('woff'),
-    url('fonts/icomoon.svg?3dgz49#icomoon') format('svg');
+  src:  url('fonts/icomoon.eot?z5nd1l');
+  src:  url('fonts/icomoon.eot?z5nd1l#iefix') format('embedded-opentype'),
+    url('fonts/icomoon.ttf?z5nd1l') format('truetype'),
+    url('fonts/icomoon.woff?z5nd1l') format('woff'),
+    url('fonts/icomoon.svg?z5nd1l#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -30,23 +30,14 @@
 .icon-bright:before {
   content: "\e901";
 }
-.icon-cart:before {
-  content: "\e902";
-}
 .icon-menu:before {
   content: "\e903";
-}
-.icon-more:before {
-  content: "\e904";
 }
 .icon-person:before {
   content: "\e905";
 }
 .icon-progress:before {
   content: "\e906";
-}
-.icon-share:before {
-  content: "\e907";
 }
 .icon-books:before {
   content: "\e920";
@@ -72,6 +63,27 @@
 .icon-shrink:before {
   content: "\e98a";
 }
+.icon-bin:before {
+  content: "\e9ac";
+}
+.icon-earth:before {
+  content: "\e9ca";
+}
 .icon-bookmark:before {
   content: "\e9d2";
+}
+.icon-cross:before {
+  content: "\ea0f";
+}
+.icon-arrow-right:before {
+  content: "\ea34";
+}
+.icon-text-color:before {
+  content: "\ea6d";
+}
+.icon-github:before {
+  content: "\eab0";
+}
+.icon-yelp:before {
+  content: "\ead7";
 }
