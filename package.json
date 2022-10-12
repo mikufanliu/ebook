@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
-    "epubjs": "^0.3.84",
+    "epubjs": "^0.3.93",
     "screenfull": "^4.2.0",
     "vue": "^2.5.2",
     "vue-axios": "^2.1.4",
